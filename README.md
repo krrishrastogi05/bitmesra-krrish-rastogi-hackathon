@@ -130,6 +130,9 @@ Press Ctrl+K to type a command. Examples:
 | `STRESS GEO` | Runs the Geopolitical preset shock |
 | `DAY 2022-02-24` | Moves the replay to 24 February 2022 |
 | `PLAY` / `STOP` | Starts or stops the replay |
+| `THEME LIGHT` / `THEME DARK` | Changes the theme. Use the light theme on a projector |
+
+The **LIGHT** / **DARK** button in the function key bar also changes the theme. The terminal keeps your choice for the next visit.
 
 During the replay, a day with a severe event (impact 9 or more) shows a red alert.
 Click **RUN STRESS TEST** to apply the shock that the event triggers.

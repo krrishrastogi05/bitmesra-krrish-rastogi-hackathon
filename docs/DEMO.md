@@ -9,7 +9,8 @@ Each step has a time limit. The total time is 5 minutes.
 2. Start the web app: `npm --prefix frontend run dev`.
 3. Open <http://localhost:5173>.
 4. Make sure that the status bar shows **API UP** and **PY SIDECAR UP**.
-5. Set the browser to full screen.
+5. On a projector, type `THEME LIGHT` in the command line. The light theme is easier to read on a projector.
+6. Set the browser to full screen.
 
 ## 0:00 to 0:30. The problem
 
