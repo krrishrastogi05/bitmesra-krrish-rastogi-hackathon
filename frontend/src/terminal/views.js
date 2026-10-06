@@ -1,5 +1,6 @@
 import MonitorPanel from '../panels/MonitorPanel';
 import SignalsPanel from '../panels/SignalsPanel';
+import IndexPanel from '../panels/IndexPanel';
 
 /** Function keys, command words and descriptions for each terminal view. */
 export const VIEWS = [
@@ -15,4 +16,5 @@ export const VIEWS = [
 export const PANELS = {
   MON: MonitorPanel,
   SIG: SignalsPanel,
+  IDX: IndexPanel,
 };
