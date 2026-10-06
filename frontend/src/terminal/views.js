@@ -1,3 +1,4 @@
+import MonitorPanel from '../panels/MonitorPanel';
 
 /** Function keys, command words and descriptions for each terminal view. */
 export const VIEWS = [
@@ -11,4 +12,5 @@ export const VIEWS = [
 ];
 
 export const PANELS = {
+  MON: MonitorPanel,
 };
