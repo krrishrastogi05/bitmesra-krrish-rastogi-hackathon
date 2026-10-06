@@ -1,6 +1,9 @@
 """
-Sandboxed Python code execution.
-Runs LLM-generated code with restricted imports and 30s timeout.
+Sandboxed Python code execution for the analyst workbench.
+Runs user code with a restricted set of builtins, an import allow-list and a 30 s time limit.
+
+ponytail: this is an in-process sandbox. It stops casual misuse, not a determined attacker.
+For a real deployment, run each job in a separate container with no network access.
 """
 import io
 import sys
@@ -23,15 +26,17 @@ class CodeExecutionResult:
         self.figures: list[str] = []  # base64 PNG strings
         self.error: str | None = None
         self.success: bool = False
+        self.table: dict | None = None  # set when the code assigns a DataFrame or Series to `result`
 
 
-def execute_code(code: str, dataframe=None) -> CodeExecutionResult:
+def execute_code(code: str, dataframe=None, extra: dict | None = None) -> CodeExecutionResult:
     """
     Execute Python code in a sandboxed environment.
 
     Args:
         code: Python code string to execute.
         dataframe: pandas DataFrame to make available as 'df'.
+        extra: more names to put in the namespace (for example the signal DataFrames).
 
     Returns:
         CodeExecutionResult with stdout, figures, and error info.
@@ -48,6 +53,7 @@ def execute_code(code: str, dataframe=None) -> CodeExecutionResult:
         "np": np,
         "df": dataframe,
         "_figures": [],  # Code appends base64 figures here
+        **(extra or {}),
     }
 
     # Add optional imports
@@ -145,6 +151,7 @@ def execute_code(code: str, dataframe=None) -> CodeExecutionResult:
     result.figures = namespace.get("_figures", [])
     result.error = execution_error[0]
     result.success = execution_error[0] is None
+    result.table = _to_table(namespace.get("result"))
 
     # Auto-capture any open matplotlib figures not manually saved
     try:
@@ -163,6 +170,29 @@ def execute_code(code: str, dataframe=None) -> CodeExecutionResult:
         pass
 
     return result
+
+
+def _to_table(value: Any, max_rows: int = 200) -> dict | None:
+    """Convert a DataFrame or Series to {columns, rows} for the UI. Other values give None."""
+    import pandas as pd
+    if isinstance(value, pd.Series):
+        value = value.to_frame()
+    if not isinstance(value, pd.DataFrame):
+        return None
+    df = value.head(max_rows).reset_index()
+    df = df.astype(object).where(pd.notna(df), None)
+    return {"columns": [str(c) for c in df.columns], "rows": [[_plain(v) for v in row] for row in df.itertuples(index=False)],
+            "total_rows": int(len(value))}
+
+
+def _plain(v: Any) -> Any:
+    """Make numpy and pandas scalars JSON-safe."""
+    if hasattr(v, "item"):
+        try:
+            return v.item()
+        except (ValueError, AttributeError):
+            pass
+    return v if isinstance(v, (int, float, str, bool, type(None))) else str(v)
 
 
 def _get_safe_builtins() -> dict:
