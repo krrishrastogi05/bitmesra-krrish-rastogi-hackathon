@@ -85,7 +85,8 @@ def _load(name: str) -> pd.DataFrame:
     path = OUT / name
     if not path.exists():
         raise HTTPException(503, f"{name} is missing. Run: python -m engine.pipeline")
-    return pd.read_json(path)
+    # Keep dates as "YYYY-MM-DD" strings in every frame, so merges between frames work.
+    return pd.read_json(path, convert_dates=False, keep_default_dates=False)
 
 
 _frames: dict = {"mtime": None}
