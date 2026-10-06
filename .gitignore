@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# Env
+.env
+
+# Engine: raw downloads and trained models are rebuilt by the pipeline
+data/raw/
+sidecar/models/
+
+# IDE / OS
+.vscode/
+.idea/
+.claude/
+.DS_Store
+Thumbs.db
+*.log
