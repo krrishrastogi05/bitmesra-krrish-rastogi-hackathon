@@ -26,13 +26,14 @@ export function useApi(path) {
   return { ...state, reload: load };
 }
 
+/** Event-class colours as CSS variables (they follow the theme). For canvas and SVG, use classHex() from theme.jsx. */
 export const CLASS_COLOR = {
-  Geopolitical: '#ff4d4f',
-  Macro: '#ffb020',
-  'Credit Event': '#e879f9',
-  'M&A': '#22d3ee',
-  'Product Launch': '#34d399',
-  Other: '#64748b',
+  Geopolitical: 'var(--c-geo)',
+  Macro: 'var(--c-macro)',
+  'Credit Event': 'var(--c-credit)',
+  'M&A': 'var(--c-ma)',
+  'Product Launch': 'var(--c-product)',
+  Other: 'var(--c-other)',
 };
 
 export const fmtPct = (x, d = 1) => `${x >= 0 ? '+' : ''}${(x * 100).toFixed(d)}%`;
