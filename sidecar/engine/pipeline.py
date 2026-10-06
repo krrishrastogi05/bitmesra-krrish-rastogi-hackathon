@@ -94,9 +94,9 @@ def run(retrain: bool = False) -> None:
 
     with stage("sentiment", "Score tone from -1 to 1 (TF-IDF + logistic regression)", len(tweets) + len(news)) as s:
         tweets["sentiment"] = sentiment.score(s_model, tweets["text"].tolist()).round(3)
-        model_tone = sentiment.score(s_model, news["headline"].tolist())
+        model_tone = sentiment.score_news(s_model, news["headline"].tolist())  # model + risk word list
         gdelt_tone = np.clip(news["tone"].fillna(0) / 10, -1, 1)
-        news["sentiment"] = (0.7 * model_tone + 0.3 * gdelt_tone).round(3)  # blend the model with GDELT's own tone
+        news["sentiment"] = (0.7 * model_tone + 0.3 * gdelt_tone).round(3)  # then blend with GDELT's own tone
         s["rows_out"] = len(tweets) + len(news)
         s["sample"] = {"in": news.iloc[0]["headline"], "out": float(news.iloc[0]["sentiment"])}
 
@@ -190,7 +190,7 @@ def write_outputs(daily, news, tweets, prices, s_model, report) -> None:
     ]
     (OUT / "company_daily.json").write_text(daily_out.to_json(orient="records"))
 
-    news_out = news.assign(explain=[sentiment.explain(s_model, h) for h in news["headline"]])
+    news_out = news.assign(explain=[sentiment.explain_news(s_model, h) for h in news["headline"]])
     cols = ["event_id", "date", "headline", "url", "place", "country", "lat", "lng", "mentions", "goldstein", "tone",
             "tickers", "sentiment", "event_class", "class_method", "class_conf", "impact", "impact_parts", "explain"]
     (OUT / "events.json").write_text(news_out[cols].to_json(orient="records"))

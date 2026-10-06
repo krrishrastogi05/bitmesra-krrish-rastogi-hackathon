@@ -36,6 +36,21 @@ from engine.preprocess import cashtags, clean
 app = FastAPI(title="Meridian sidecar", version="1.0.0")
 
 
+@app.on_event("startup")
+def warm_up() -> None:
+    """Load the models and the workbench DataFrames in the background, so the first request is fast."""
+    import threading
+
+    def load():
+        try:
+            models()
+            workbench_namespace()
+        except Exception:  # the endpoints report missing files themselves
+            pass
+
+    threading.Thread(target=load, daemon=True).start()
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "sidecar", "models": (MODELS / "sentiment.joblib").exists()}
@@ -56,14 +71,14 @@ class ScoreRequest(BaseModel):
 @app.post("/score")
 def score(req: ScoreRequest):
     s_model, e_model = models()
-    sent = float(sentiment.score(s_model, [req.text])[0])
+    sent = float(sentiment.score_news(s_model, [req.text])[0])
     ev, method, conf = events.classify(e_model, req.text)
     text = clean(req.text)
     tickers = sorted(set(news_tickers(text)) | (cashtags(req.text) & set(UNIVERSE)))
     # A single text has no mention count or conflict code, so volume and severity are zero.
     imp, parts = news_impact(sent, ev, 0, 0.0, is_market_relevant(text), bool(tickers))
     return {"sentiment": round(sent, 3), "event_class": ev, "class_method": method, "class_conf": conf, "tickers": tickers,
-            "impact": imp, "impact_parts": parts, "explain": sentiment.explain(s_model, req.text)}
+            "impact": imp, "impact_parts": parts, "explain": sentiment.explain_news(s_model, req.text)}
 
 
 def _load(name: str) -> pd.DataFrame:

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T06:47:55.865172+00:00",
+  "generated_at": "2026-10-06T06:55:26.093519+00:00",
   "replay": [
     "2022-02-17",
     "2022-03-09"
@@ -14,7 +14,7 @@
         "sentiment_accuracy": 0.8317,
         "event_accuracy": 0.8448
       },
-      "ms": 1451.4
+      "ms": 760.0
     },
     {
       "name": "ingest",
@@ -29,7 +29,7 @@
         "tweet": "Mainstream media has done an amazing job at brainwashing people. Today at work, we were asked what companies we believe in &amp; I said @Tesla because they make",
         "news_url": "https://www.winsfordguardian.co.uk/news/19930073.russia-drag-ukraine-crisis-months-warns-truss/"
       },
-      "ms": 225487.2
+      "ms": 166856.4
     },
     {
       "name": "clean",
@@ -40,7 +40,7 @@
         "in": "Mainstream media has done an amazing job at brainwashing people. Today at work, we were asked what companies we believe in &amp; I said @Tesla because they make",
         "out": "mainstream media has done an amazing job at brainwashing people. today at work, we were asked what companies we believe in & i said @user because they make the "
       },
-      "ms": 3502.5
+      "ms": 1673.8
     },
     {
       "name": "entities",
@@ -55,7 +55,7 @@
           "tickers": []
         }
       },
-      "ms": 1154.8
+      "ms": 507.9
     },
     {
       "name": "sentiment",
@@ -66,7 +66,7 @@
         "in": "russia drag ukraine crisis months warns truss",
         "out": -0.643
       },
-      "ms": 15525.4
+      "ms": 7419.3
     },
     {
       "name": "classify",
@@ -82,7 +82,7 @@
         "in": "russia drag ukraine crisis months warns truss",
         "out": "Geopolitical"
       },
-      "ms": 22879.5
+      "ms": 10979.9
     },
     {
       "name": "impact",
@@ -103,7 +103,7 @@
           }
         }
       },
-      "ms": 139.9
+      "ms": 42.2
     },
     {
       "name": "aggregate",
@@ -121,7 +121,7 @@
           "impact": 4
         }
       },
-      "ms": 43569.4
+      "ms": 25146.1
     },
     {
       "name": "validate",
@@ -136,14 +136,14 @@
         "high_impact_days": 107,
         "low_impact_days": 1205
       },
-      "ms": 285.9
+      "ms": 121.0
     },
     {
       "name": "publish",
       "description": "Write JSON signal files for the API",
       "rows_in": 7698,
       "rows_out": 7698,
-      "ms": 14538.4
+      "ms": 9371.5
     }
   ]
 }
