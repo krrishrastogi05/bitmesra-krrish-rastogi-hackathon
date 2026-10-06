@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { getHealth } from '../controllers/healthController';
 import { getIndex } from '../controllers/indexController';
+import { getTimeline } from '../controllers/replayController';
 import {
   exportCsv, getCompanies, getEvents, getModelReport, getPipeline, getPosts, getUniverse,
 } from '../controllers/signalsController';
+import { getPortfolio, getScenarios, runScenario } from '../controllers/stressController';
 import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
@@ -18,8 +20,14 @@ router.get('/signals/posts', getPosts);
 router.get('/signals/export.csv', exportCsv);
 router.get('/pipeline', getPipeline);
 router.get('/model', getModelReport);
+router.get('/replay/timeline', getTimeline);
 
 // Module A: index rebalancer
 router.get('/index', getIndex);
+
+// Module B: stress tester
+router.get('/stress/portfolio', getPortfolio);
+router.get('/stress/scenarios', getScenarios);
+router.post('/stress/run', runScenario);
 
 export default router;
