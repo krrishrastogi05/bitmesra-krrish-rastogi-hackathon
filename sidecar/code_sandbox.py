@@ -29,7 +29,11 @@ class CodeExecutionResult:
         self.table: dict | None = None  # set when the code assigns a DataFrame or Series to `result`
 
 
-def execute_code(code: str, dataframe=None, extra: dict | None = None) -> CodeExecutionResult:
+# Chart style per terminal theme: (matplotlib style, figure background)
+CHART_THEMES = {"dark": ("dark_background", "#0a0c0f"), "light": ("default", "#ffffff")}
+
+
+def execute_code(code: str, dataframe=None, extra: dict | None = None, theme: str = "dark") -> CodeExecutionResult:
     """
     Execute Python code in a sandboxed environment.
 
@@ -61,7 +65,8 @@ def execute_code(code: str, dataframe=None, extra: dict | None = None) -> CodeEx
         import matplotlib
         matplotlib.use("Agg")  # Non-interactive backend
         import matplotlib.pyplot as plt
-        plt.style.use("dark_background")
+        style, fig_bg = CHART_THEMES.get(theme, CHART_THEMES["dark"])
+        plt.style.use(style)
 
         # Monkey-patch plt.show() so LLM-generated code that calls plt.show()
         # automatically saves the figure to _figures instead of discarding it.
@@ -73,7 +78,7 @@ def execute_code(code: str, dataframe=None, extra: dict | None = None) -> CodeEx
                 buf = io.BytesIO()
                 fig.savefig(
                     buf, format="png", dpi=150, bbox_inches="tight",
-                    facecolor="#111827", edgecolor="none",
+                    facecolor=fig_bg, edgecolor="none",
                 )
                 buf.seek(0)
                 namespace["_figures"].append(base64.b64encode(buf.read()).decode())
@@ -161,7 +166,7 @@ def execute_code(code: str, dataframe=None, extra: dict | None = None) -> CodeEx
             buf = io.BytesIO()
             fig.savefig(
                 buf, format="png", dpi=150, bbox_inches="tight",
-                facecolor="#111827", edgecolor="none",
+                facecolor=fig_bg, edgecolor="none",
             )
             buf.seek(0)
             result.figures.append(base64.b64encode(buf.read()).decode())

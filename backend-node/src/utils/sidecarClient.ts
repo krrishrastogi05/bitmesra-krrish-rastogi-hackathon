@@ -52,4 +52,5 @@ export interface WorkbenchResult {
 }
 
 export const scoreText = (text: string) => sidecarFetch<ScoreResult>('/score', { text });
-export const runWorkbench = (code: string) => sidecarFetch<WorkbenchResult>('/workbench', { code });
+/** theme sets the chart style: dark charts for the dark terminal, light charts for the light theme. */
+export const runWorkbench = (code: string, theme: 'dark' | 'light' = 'dark') => sidecarFetch<WorkbenchResult>('/workbench', { code, theme });

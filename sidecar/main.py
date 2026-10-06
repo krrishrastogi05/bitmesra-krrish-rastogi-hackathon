@@ -14,6 +14,7 @@ import sys
 import time
 from functools import lru_cache
 from pathlib import Path
+from typing import Literal
 
 # UTF-8 output on Windows consoles
 if sys.stdout and hasattr(sys.stdout, "buffer"):
@@ -110,12 +111,13 @@ def workbench_namespace() -> dict:
 
 class WorkbenchRequest(BaseModel):
     code: str = Field(min_length=1, max_length=8000)
+    theme: Literal["dark", "light"] = "dark"
 
 
 @app.post("/workbench")
 def workbench(req: WorkbenchRequest):
     t0 = time.perf_counter()
-    result = execute_code(req.code, extra=workbench_namespace())
+    result = execute_code(req.code, extra=workbench_namespace(), theme=req.theme)
     return {
         "stdout": result.stdout[-20000:],
         "stderr": result.stderr[-5000:],
