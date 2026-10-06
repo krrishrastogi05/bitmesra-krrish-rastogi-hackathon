@@ -27,14 +27,14 @@ async function ensureSidecar(): Promise<void> {
   sidecarProcess.on('error', (err) => logger.error(err, 'Failed to start sidecar'));
   sidecarProcess.unref();
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 60; i++) {
     await sleep(500);
     if (await sidecarHealth()) {
       logger.info('Sidecar started');
       return;
     }
   }
-  logger.warn('Sidecar did not report healthy within 10s; live scoring and the workbench are off.');
+  logger.warn('Sidecar did not report healthy within 30s; live scoring and the workbench are off.');
 }
 
 async function main(): Promise<void> {
