@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useApi } from '../api';
+import { useTheme } from '../theme';
+import { Moon, Sun } from 'lucide-react';
 import { VIEWS, PANELS } from './views';
 import CommandBar from './CommandBar';
 import ReplayBar from './ReplayBar';
@@ -12,6 +14,7 @@ export const SEVERE = 9;
 
 /** The terminal shell. Holds the active view, the replay day and the trigger alert. */
 export default function Terminal() {
+  const { theme, setTheme, toggle } = useTheme();
   const timeline = useApi('/replay/timeline');
   const universe = useApi('/universe');
   const prices = useApi('/prices');
@@ -63,7 +66,8 @@ export default function Terminal() {
     if (cmd.view) open(cmd.view, cmd.args);
     if (cmd.day) { const i = days.findIndex((d) => d.date === cmd.day); if (i >= 0) setDayIdx(i); }
     if (cmd.play !== undefined) setPlaying(cmd.play);
-  }, [days, open]);
+    if (cmd.theme) (cmd.theme === 'toggle' ? toggle() : setTheme(cmd.theme));
+  }, [days, open, setTheme, toggle]);
 
   const ctx = useMemo(() => ({
     day, days, dayIdx, setDayIdx, universe: universe.data ?? {}, prices: prices.data ?? {}, args, open,
@@ -80,7 +84,10 @@ export default function Terminal() {
             <kbd>{v.f}</kbd>{v.label}
           </button>
         ))}
-        <button className={`fkey${alertsOn ? '' : ' faint'}`} style={{ marginLeft: 'auto' }} onClick={() => setAlertsOn((x) => !x)}>
+        <button className="fkey" style={{ marginLeft: 'auto' }} onClick={toggle} aria-label={`Switch to the ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+          {theme === 'dark' ? <Sun size={12} /> : <Moon size={12} />}{theme === 'dark' ? 'LIGHT' : 'DARK'}
+        </button>
+        <button className={`fkey${alertsOn ? '' : ' faint'}`} onClick={() => setAlertsOn((x) => !x)}>
           ALERTS {alertsOn ? 'ON' : 'OFF'}
         </button>
       </nav>

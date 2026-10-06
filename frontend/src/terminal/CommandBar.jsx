@@ -10,6 +10,7 @@ export function parseCommand(raw, tickers) {
   const view = VIEWS.find((v) => words.includes(v.key) || words.includes(v.label));
   const ticker = words.find((w) => tickers.includes(w));
   const date = raw.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+  if (words[0] === 'THEME' || words[0] === 'LIGHT' || words[0] === 'DARK') return { theme: words.includes('LIGHT') ? 'light' : words.includes('DARK') ? 'dark' : 'toggle' };
   if (words[0] === 'PLAY') return { play: true };
   if (words[0] === 'STOP' || words[0] === 'PAUSE') return { play: false };
   if (words[0] === 'DAY' && date) return { day: date, view: 'MON' };
@@ -30,6 +31,8 @@ function suggestions(input, tickers) {
     ...STRESS_IDS.map((id) => ({ cmd: `STRESS ${id} <GO>`, desc: `Run the ${id.toLowerCase()} scenario` })),
     { cmd: 'DAY 2022-02-24 <GO>', desc: 'Jump the replay to a date' },
     { cmd: 'PLAY <GO>', desc: 'Play the replay' },
+    { cmd: 'THEME LIGHT <GO>', desc: 'Light theme, for presentations' },
+    { cmd: 'THEME DARK <GO>', desc: 'Dark terminal theme' },
     { cmd: 'STOP <GO>', desc: 'Pause the replay' },
   ];
   if (!q) return base.slice(0, 7);
