@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getHealth } from '../controllers/healthController';
+import { getIndex } from '../controllers/indexController';
 import {
   exportCsv, getCompanies, getEvents, getModelReport, getPipeline, getPosts, getUniverse,
 } from '../controllers/signalsController';
@@ -17,5 +18,8 @@ router.get('/signals/posts', getPosts);
 router.get('/signals/export.csv', exportCsv);
 router.get('/pipeline', getPipeline);
 router.get('/model', getModelReport);
+
+// Module A: index rebalancer
+router.get('/index', getIndex);
 
 export default router;
