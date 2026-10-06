@@ -3,7 +3,9 @@
 export type EventClass = 'Geopolitical' | 'Macro' | 'Credit Event' | 'M&A' | 'Product Launch' | 'Other';
 
 export interface ExplainTerm { term: string; weight: number }
-export type ImpactParts = Record<'tone' | 'event_class' | 'volume' | 'severity' | 'coverage', number>;
+/** Named parts of the impact score. News: tone, event_class, volume, severity, relevance, coverage.
+ *  Company-days: base, attention, tone, event_class. */
+export type ImpactParts = Record<string, number>;
 
 /** One signal per company per day (aggregated from tweets). */
 export interface CompanySignal {
@@ -13,6 +15,7 @@ export interface CompanySignal {
   event_class: EventClass;
   impact: number;         // 1..10
   posts: number;
+  attention: number;      // posts today / median posts of the previous 30 days
   impact_parts: ImpactParts;
   top: Array<{ text: string; sentiment: number; explain: ExplainTerm[] }> | null;
 }

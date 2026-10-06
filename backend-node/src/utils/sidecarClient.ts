@@ -34,6 +34,8 @@ export interface ScoreResult {
   sentiment: number;
   event_class: string;
   class_method: string;
+  class_conf: number;
+  tickers: string[];
   impact: number;
   impact_parts: Record<string, number>;
   explain: Array<{ term: string; weight: number }>;
