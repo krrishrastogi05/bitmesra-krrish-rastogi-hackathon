@@ -1,54 +1,53 @@
 /**
- * HTTP client for the Python sidecar (sklearn inference + code sandbox).
- * Sidecar runs on localhost:8090 and is never exposed to the frontend.
+ * HTTP client for the Python sidecar (NLP scoring + workbench sandbox).
+ * The sidecar listens on the loopback address only. The browser never calls it directly.
  */
 import { config } from '../config';
+import { HttpError } from '../middleware/errorHandler';
 
-async function sidecarFetch<T>(path: string, body?: Record<string, any>): Promise<T> {
-  const url = `${config.sidecarUrl}${path}`;
-  const res = await fetch(url, {
-    method: body !== undefined ? 'POST' : 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(30_000),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Sidecar ${path} returned ${res.status}: ${text}`);
+async function sidecarFetch<T>(path: string, body?: unknown, timeoutMs = 35_000): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(`${config.sidecarUrl}${path}`, {
+      method: body !== undefined ? 'POST' : 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  } catch {
+    throw new HttpError(503, 'The Python sidecar is not available. Start it with "python main.py" in the sidecar folder.');
   }
+  if (!res.ok) throw new HttpError(502, `Sidecar ${path} returned ${res.status}`);
   return res.json() as Promise<T>;
 }
 
 export async function sidecarHealth(): Promise<boolean> {
   try {
-    await sidecarFetch('/health');
+    await sidecarFetch('/health', undefined, 1500);
     return true;
   } catch {
     return false;
   }
 }
 
-export interface ExecuteCodeResult {
+export interface ScoreResult {
+  sentiment: number;
+  event_class: string;
+  class_method: string;
+  impact: number;
+  impact_parts: Record<string, number>;
+  explain: Array<{ term: string; weight: number }>;
+}
+
+export interface WorkbenchResult {
   stdout: string;
   stderr: string;
-  result_json: any;
-  artifacts: Array<{ type: string; b64: string }>;
-  error?: string;
+  figures: string[];  // base64 PNG
+  table: { columns: string[]; rows: unknown[][] } | null;
+  error: string | null;
   success: boolean;
+  ms: number;
 }
 
-export interface ExecuteCodeOptions {
-  code: string;
-  session_id?: string;
-  rows?: Record<string, any>[];
-  timeout_s?: number;
-}
-
-export async function sidecarExecuteCode(opts: ExecuteCodeOptions): Promise<ExecuteCodeResult> {
-  return sidecarFetch<ExecuteCodeResult>('/execute-code', {
-    code: opts.code,
-    session_id: opts.session_id,
-    rows: opts.rows,
-    timeout_s: opts.timeout_s ?? 30,
-  });
-}
+export const scoreText = (text: string) => sidecarFetch<ScoreResult>('/score', { text });
+export const runWorkbench = (code: string) => sidecarFetch<WorkbenchResult>('/workbench', { code });

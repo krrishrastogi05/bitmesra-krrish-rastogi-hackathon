@@ -6,6 +6,7 @@ import {
   exportCsv, getCompanies, getEvents, getModelReport, getPipeline, getPosts, getUniverse,
 } from '../controllers/signalsController';
 import { getPortfolio, getScenarios, runScenario } from '../controllers/stressController';
+import { postRun, postScore } from '../controllers/workbenchController';
 import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
@@ -29,5 +30,9 @@ router.get('/index', getIndex);
 router.get('/stress/portfolio', getPortfolio);
 router.get('/stress/scenarios', getScenarios);
 router.post('/stress/run', runScenario);
+
+// Live scoring and the Python workbench (sidecar)
+router.post('/score', asyncHandler(postScore));
+router.post('/workbench/run', asyncHandler(postRun));
 
 export default router;
