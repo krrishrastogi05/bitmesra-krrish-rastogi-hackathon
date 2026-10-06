@@ -135,7 +135,8 @@ export default function MonitorPanel({ ctx }) {
               globeImageUrl={look.globe}
               bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
               backgroundImageUrl={look.sky}
-              backgroundColor={c.fgGlobe || '#000000'}
+              backgroundColor={look.sky ? (c.fgGlobe || '#000000') : 'rgba(0,0,0,0)'}
+              showGraticules={theme === 'light'}
               showAtmosphere
               atmosphereColor={look.atmosphere}
               atmosphereAltitude={0.13}

@@ -162,6 +162,14 @@
   background: var(--fg-globe);
   overflow: hidden;
 }
+/* Light theme: the globe canvas is transparent; this daylight sky with a faint dot grid sits behind it
+   (the dark theme uses the night-sky texture instead). */
+:root[data-theme="light"] .fg-globe-area {
+  background:
+    radial-gradient(circle, rgb(15 23 42 / .09) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    radial-gradient(ellipse 60% 55% at 50% 48%, rgb(255 255 255 / .95) 0%, rgb(255 255 255 / 0) 70%),
+    linear-gradient(180deg, #dbe8f6 0%, #eef4fb 55%, #e3ecf6 100%);
+}
 
 /* Globe canvas */
 .fg-globe-area canvas {
