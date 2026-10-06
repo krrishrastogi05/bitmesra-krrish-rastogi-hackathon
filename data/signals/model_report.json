@@ -1,0 +1,104 @@
+{
+  "sentiment": {
+    "dataset": "zeroshot/twitter-financial-news-sentiment",
+    "train_rows": 9543,
+    "valid_rows": 2388,
+    "accuracy": 0.8317,
+    "macro_f1": 0.7774,
+    "labels": [
+      "bearish",
+      "bullish",
+      "neutral"
+    ],
+    "confusion": [
+      [
+        249,
+        30,
+        68
+      ],
+      [
+        29,
+        356,
+        90
+      ],
+      [
+        83,
+        102,
+        1381
+      ]
+    ]
+  },
+  "events": {
+    "dataset": "zeroshot/twitter-financial-news-topic (20 topics mapped to 6 classes)",
+    "train_rows": 16990,
+    "valid_rows": 4117,
+    "accuracy": 0.8448,
+    "macro_f1": 0.7798,
+    "labels": [
+      "Geopolitical",
+      "Macro",
+      "Credit Event",
+      "M&A",
+      "Product Launch",
+      "Other"
+    ],
+    "confusion": [
+      [
+        222,
+        9,
+        0,
+        1,
+        9,
+        8
+      ],
+      [
+        83,
+        771,
+        8,
+        4,
+        26,
+        53
+      ],
+      [
+        3,
+        7,
+        58,
+        2,
+        5,
+        2
+      ],
+      [
+        3,
+        0,
+        0,
+        106,
+        14,
+        7
+      ],
+      [
+        10,
+        25,
+        9,
+        14,
+        725,
+        69
+      ],
+      [
+        38,
+        67,
+        23,
+        39,
+        101,
+        1596
+      ]
+    ]
+  },
+  "impact_vs_returns": {
+    "company_days": 3288,
+    "corr_impact_vs_next_abs_return": 0.078,
+    "avg_next_abs_return_high_impact_pct": 3.29,
+    "avg_next_abs_return_low_impact_pct": 1.95,
+    "high_impact_days": 107,
+    "low_impact_days": 1205
+  }
+}

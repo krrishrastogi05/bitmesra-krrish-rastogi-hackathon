@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-10-06T06:47:55.865172+00:00",
+  "replay": [
+    "2022-02-17",
+    "2022-03-09"
+  ],
+  "stages": [
+    {
+      "name": "models",
+      "description": "Load or train the sentiment and event models",
+      "rows_in": 0,
+      "rows_out": 2,
+      "sample": {
+        "sentiment_accuracy": 0.8317,
+        "event_accuracy": 0.8448
+      },
+      "ms": 1451.4
+    },
+    {
+      "name": "ingest",
+      "description": "Read Kaggle stock tweets and GDELT news events",
+      "rows_in": 0,
+      "rows_out": 69229,
+      "sources": {
+        "tweets": 65869,
+        "gdelt_news": 3360
+      },
+      "sample": {
+        "tweet": "Mainstream media has done an amazing job at brainwashing people. Today at work, we were asked what companies we believe in &amp; I said @Tesla because they make",
+        "news_url": "https://www.winsfordguardian.co.uk/news/19930073.russia-drag-ukraine-crisis-months-warns-truss/"
+      },
+      "ms": 225487.2
+    },
+    {
+      "name": "clean",
+      "description": "Fix encoding, strip URLs and mentions, drop duplicates",
+      "rows_in": 69229,
+      "rows_out": 68407,
+      "sample": {
+        "in": "Mainstream media has done an amazing job at brainwashing people. Today at work, we were asked what companies we believe in &amp; I said @Tesla because they make",
+        "out": "mainstream media has done an amazing job at brainwashing people. today at work, we were asked what companies we believe in & i said @user because they make the "
+      },
+      "ms": 3502.5
+    },
+    {
+      "name": "entities",
+      "description": "Link text to tickers (cashtags, company names) and places",
+      "rows_in": 68407,
+      "rows_out": 68407,
+      "linked_news": 40,
+      "sample": {
+        "in": "russia drag ukraine crisis months warns truss",
+        "out": {
+          "place": "Moscow, Moskva, Russia",
+          "tickers": []
+        }
+      },
+      "ms": 1154.8
+    },
+    {
+      "name": "sentiment",
+      "description": "Score tone from -1 to 1 (TF-IDF + logistic regression)",
+      "rows_in": 68407,
+      "rows_out": 68407,
+      "sample": {
+        "in": "russia drag ukraine crisis months warns truss",
+        "out": -0.643
+      },
+      "ms": 15525.4
+    },
+    {
+      "name": "classify",
+      "description": "Label the event type (rules, GDELT codes, then classifier)",
+      "rows_in": 68407,
+      "rows_out": 68407,
+      "methods": {
+        "model": 63740,
+        "rule": 4386,
+        "gdelt": 281
+      },
+      "sample": {
+        "in": "russia drag ukraine crisis months warns truss",
+        "out": "Geopolitical"
+      },
+      "ms": 22879.5
+    },
+    {
+      "name": "impact",
+      "description": "Score news impact 1-10 from tone, class, volume, severity and market relevance",
+      "rows_in": 3036,
+      "rows_out": 3036,
+      "sample": {
+        "in": "russia drag ukraine crisis months warns truss",
+        "out": {
+          "impact": 7,
+          "parts": {
+            "tone": 1.61,
+            "event_class": 3.0,
+            "volume": 2.0,
+            "severity": 0.2,
+            "relevance": 0.0,
+            "coverage": 0.0
+          }
+        }
+      },
+      "ms": 139.9
+    },
+    {
+      "name": "aggregate",
+      "description": "Roll tweets up to one record per company per day; impact from abnormal attention",
+      "rows_in": 65371,
+      "rows_out": 4662,
+      "sample": {
+        "out": {
+          "date": "2022-03-24",
+          "ticker": "INTC",
+          "sentiment": 0.482,
+          "event_class": "Other",
+          "posts": 2,
+          "attention": 0.8,
+          "impact": 4
+        }
+      },
+      "ms": 43569.4
+    },
+    {
+      "name": "validate",
+      "description": "Check impact against the next-day price move",
+      "rows_in": 4662,
+      "rows_out": 4662,
+      "sample": {
+        "company_days": 3288,
+        "corr_impact_vs_next_abs_return": 0.078,
+        "avg_next_abs_return_high_impact_pct": 3.29,
+        "avg_next_abs_return_low_impact_pct": 1.95,
+        "high_impact_days": 107,
+        "low_impact_days": 1205
+      },
+      "ms": 285.9
+    },
+    {
+      "name": "publish",
+      "description": "Write JSON signal files for the API",
+      "rows_in": 7698,
+      "rows_out": 7698,
+      "ms": 14538.4
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "AAPL": {
+    "name": "Apple",
+    "sector": "Technology"
+  },
+  "MSFT": {
+    "name": "Microsoft",
+    "sector": "Technology"
+  },
+  "AMZN": {
+    "name": "Amazon",
+    "sector": "Consumer Discretionary"
+  },
+  "GOOG": {
+    "name": "Alphabet",
+    "sector": "Communication Services"
+  },
+  "META": {
+    "name": "Meta Platforms",
+    "sector": "Communication Services"
+  },
+  "TSLA": {
+    "name": "Tesla",
+    "sector": "Consumer Discretionary"
+  },
+  "AMD": {
+    "name": "AMD",
+    "sector": "Technology"
+  },
+  "NFLX": {
+    "name": "Netflix",
+    "sector": "Communication Services"
+  },
+  "PYPL": {
+    "name": "PayPal",
+    "sector": "Financials"
+  },
+  "DIS": {
+    "name": "Walt Disney",
+    "sector": "Communication Services"
+  },
+  "BA": {
+    "name": "Boeing",
+    "sector": "Industrials"
+  },
+  "COST": {
+    "name": "Costco",
+    "sector": "Consumer Staples"
+  },
+  "INTC": {
+    "name": "Intel",
+    "sector": "Technology"
+  },
+  "KO": {
+    "name": "Coca-Cola",
+    "sector": "Consumer Staples"
+  },
+  "PG": {
+    "name": "Procter & Gamble",
+    "sector": "Consumer Staples"
+  },
+  "CRM": {
+    "name": "Salesforce",
+    "sector": "Technology"
+  }
+}
