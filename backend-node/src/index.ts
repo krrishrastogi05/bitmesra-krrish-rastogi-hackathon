@@ -38,8 +38,9 @@ async function ensureSidecar(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  await ensureSidecar();
   const server = app.listen(config.port, () => logger.info(`Meridian API listening on port ${config.port}`));
+  // Serve stored signals at once; the sidecar (live scoring, workbench) comes up in the background.
+  void ensureSidecar();
 
   const shutdown = (): void => {
     sidecarProcess?.kill();

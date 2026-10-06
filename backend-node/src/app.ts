@@ -15,7 +15,10 @@ const app = express();
 app.disable('x-powered-by');
 app.use(cors({ origin: config.corsOrigins }));
 app.use(express.json({ limit: '256kb' }));
-app.use(pinoHttp({ logger }));
+app.use(pinoHttp({
+  logger,
+  serializers: { req: (req) => ({ method: req.method, url: req.url }), res: (res) => ({ status: res.statusCode }) },
+}));
 app.use('/api', rateLimit(config.maxRequestsPerMinute), routes);
 app.use(notFound);
 app.use(errorHandler);
