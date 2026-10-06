@@ -67,6 +67,7 @@ flowchart LR
 | Stock Tweets for Sentiment Analysis and Prediction (Kaggle, Hugging Face mirror) | Dated tweets and daily prices (text source 2) | <https://huggingface.co/datasets/khaihernlow/stock-tweets-for-sentiment-analysis-and-prediction> |
 | Twitter Financial News Sentiment | Labels for the sentiment model | <https://huggingface.co/datasets/zeroshot/twitter-financial-news-sentiment> |
 | Twitter Financial News Topic | Labels for the event classifier | <https://huggingface.co/datasets/zeroshot/twitter-financial-news-topic> |
+| Natural Earth 1:110m countries (public domain) | Country outlines on the globe (frontend/public/countries.geojson) | <https://www.naturalearthdata.com/> |
 
 The bank book in Module B is synthetic. It does not describe a real bank.
 

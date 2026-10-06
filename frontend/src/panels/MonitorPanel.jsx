@@ -11,6 +11,28 @@ import './monitor.css';
 const IMPACT_COLOR = (i) => (i >= 8 ? 'var(--sev-hi)' : i >= 6 ? 'var(--sev-mid)' : 'var(--sev-lo)');
 /** '#rrggbb' + alpha -> 'rgba(...)', for the globe rings (WebGL cannot read CSS variables). */
 const withAlpha = (hex, a) => { const n = parseInt((hex || '#ef4444').slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+/** Country fill and outline per theme and risk band (none = no event that day). */
+const COUNTRY_LOOK = {
+  dark: {
+    high: { cap: 'rgba(220, 38, 38, 0.42)', hover: 'rgba(255, 77, 79, 0.62)', stroke: '#ff4d4f' },
+    elevated: { cap: 'rgba(245, 158, 11, 0.34)', hover: 'rgba(255, 176, 32, 0.55)', stroke: '#ffb020' },
+    low: { cap: 'rgba(34, 197, 94, 0.26)', hover: 'rgba(47, 212, 124, 0.45)', stroke: '#2fd47c' },
+    none: { cap: 'rgba(34, 197, 94, 0.08)', hover: 'rgba(47, 212, 124, 0.22)', stroke: 'rgba(47, 212, 124, 0.45)' },
+    label: 'rgba(255, 255, 255, 0.8)',
+  },
+  light: {
+    high: { cap: 'rgba(220, 38, 38, 0.36)', hover: 'rgba(220, 38, 38, 0.55)', stroke: '#b91c1c' },
+    elevated: { cap: 'rgba(217, 119, 6, 0.30)', hover: 'rgba(217, 119, 6, 0.5)', stroke: '#a34a06' },
+    low: { cap: 'rgba(22, 163, 74, 0.22)', hover: 'rgba(22, 163, 74, 0.4)', stroke: '#15803d' },
+    none: { cap: 'rgba(22, 163, 74, 0.05)', hover: 'rgba(22, 163, 74, 0.16)', stroke: 'rgba(21, 128, 61, 0.40)' },
+    label: '#0f172a',
+  },
+};
+/** Risk band of a country on the replay day, from its events. */
+const countryBand = (s) => (!s ? 'none' : s.max >= 8 ? 'high' : s.max >= 7 || (s.max >= 6 && s.n >= 3) ? 'elevated' : 'low');
+const BAND_ALT = { none: 0.004, low: 0.006, elevated: 0.01, high: 0.016 };
+const COUNTRIES_URL = `${import.meta.env.BASE_URL}countries.geojson`;
+
 /** Globe look per theme: night earth on a star field, or daylight earth on a pale sky. */
 const GLOBE_LOOK = {
   dark: { globe: '//unpkg.com/three-globe/example/img/earth-night.jpg', sky: '//unpkg.com/three-globe/example/img/night-sky.png', atmosphere: '#ff7a1a' },
@@ -34,13 +56,29 @@ export default function MonitorPanel({ ctx }) {
   const [filter, setFilter] = useState('All');
   const [tab, setTab] = useState('NEWS');
   const [tick, setTick] = useState(0);
+  const [countries, setCountries] = useState([]);
+  const [hoverCountry, setHoverCountry] = useState(null);
+  const [country, setCountry] = useState(null); // FIPS code filter, set by a click on a country
 
   const list = useMemo(() => (events.data ?? []).slice().sort((a, b) => b.impact - a.impact), [events.data]);
   const classes = useMemo(() => ['All', ...new Set(list.map((e) => e.event_class))], [list]);
-  const shown = filter === 'All' ? list : list.filter((e) => e.event_class === filter);
+  const shown = list.filter((e) => (filter === 'All' || e.event_class === filter) && (!country || e.country === country));
+  const stats = useMemo(() => {
+    const m = {};
+    for (const e of list) {
+      const s = (m[e.country] ??= { n: 0, max: 0, tone: 0 });
+      s.n += 1; s.max = Math.max(s.max, e.impact); s.tone += e.sentiment;
+    }
+    return m;
+  }, [list]);
+  const countryLook = COUNTRY_LOOK[theme];
+  const countryName = (fips) => countries.find((f) => f.properties.fips === fips)?.properties.name ?? fips;
+  const labels = useMemo(() => countries.filter((f) => { const s = stats[f.properties.fips]; return s && (s.n >= 4 || s.max >= 8); }), [countries, stats]);
   const pins = list.slice(0, 120);
 
   useEffect(() => { const id = setInterval(() => setTick((t) => t + 1), 800); return () => clearInterval(id); }, []);
+  useEffect(() => { fetch(COUNTRIES_URL).then((r) => r.json()).then((d) => setCountries(d.features)).catch(() => setCountries([])); }, []);
+  useEffect(() => { setCountry(null); }, [day?.date]);
   useEffect(() => {
     const measure = () => { const r = areaRef.current?.getBoundingClientRect(); if (r) setSize({ w: r.width, h: r.height }); };
     measure();
@@ -87,6 +125,11 @@ export default function MonitorPanel({ ctx }) {
           {tab === 'NEWS' && (
             <>
               <div className="fg-filters">
+                {country && (
+                  <button className="fg-filter-btn active" onClick={() => setCountry(null)} title="Clear the country filter">
+                    {countryName(country).toUpperCase()} ×
+                  </button>
+                )}
                 {classes.map((c) => (
                   <button key={c} className={`fg-filter-btn${filter === c ? ' active' : ''}`} onClick={() => setFilter(c)}>{c}</button>
                 ))}
@@ -145,7 +188,7 @@ export default function MonitorPanel({ ctx }) {
               pointLng="lng"
               pointColor={(d) => hex[d.event_class]}
               pointRadius={(d) => 0.18 + d.impact * 0.06 + (d.impact >= 8 && tick % 2 === 0 ? 0.12 : 0)}
-              pointAltitude={(d) => 0.01 + d.impact * 0.006}
+              pointAltitude={(d) => 0.02 + d.impact * 0.006}
               pointResolution={10}
               pointLabel={(d) => `<div style="background:var(--fg-card);border:1px solid ${CLASS_COLOR[d.event_class]};padding:8px 12px;font-family:JetBrains Mono,monospace;max-width:280px;color:var(--fg-strong);box-shadow:0 6px 20px var(--fg-shadow)">
                 <div style="color:${CLASS_COLOR[d.event_class]};font-size:10px;font-weight:700;letter-spacing:.1em">${d.event_class.toUpperCase()} · IMPACT ${d.impact}</div>
@@ -159,7 +202,34 @@ export default function MonitorPanel({ ctx }) {
               ringMaxRadius={5}
               ringPropagationSpeed={2.2}
               ringRepeatPeriod={900}
-              ringAltitude={0.005}
+              ringAltitude={0.02}
+              polygonsData={countries}
+              polygonGeoJsonGeometry="geometry"
+              polygonCapColor={(f) => {
+                const b = countryBand(stats[f.properties.fips]);
+                return f === hoverCountry || f.properties.fips === country ? countryLook[b].hover : countryLook[b].cap;
+              }}
+              polygonSideColor={() => 'rgba(0, 0, 0, 0)'}
+              polygonStrokeColor={(f) => countryLook[countryBand(stats[f.properties.fips])].stroke}
+              polygonAltitude={(f) => (f === hoverCountry ? 0.02 : BAND_ALT[countryBand(stats[f.properties.fips])])}
+              polygonsTransitionDuration={400}
+              polygonLabel={(f) => {
+                const s = stats[f.properties.fips];
+                return `<div style="background:var(--fg-card);border:1px solid var(--fg-line);padding:8px 12px;font-family:JetBrains Mono,monospace;color:var(--fg-strong);box-shadow:0 6px 20px var(--fg-shadow)">
+                  <div style="font-weight:700;letter-spacing:.08em">${f.properties.name.toUpperCase()}</div>
+                  <div style="font-size:11px;color:var(--fg-muted);margin-top:4px">${s ? `${s.n} events · max impact ${s.max} · tone ${(s.tone / s.n).toFixed(2)}` : 'No events on this day'}</div></div>`;
+              }}
+              onPolygonHover={setHoverCountry}
+              onPolygonClick={(f) => { if (stats[f.properties.fips]) { setCountry((c) => (c === f.properties.fips ? null : f.properties.fips)); setTab('NEWS'); } }}
+              labelsData={labels}
+              labelLat={(f) => f.properties.lat}
+              labelLng={(f) => f.properties.lng}
+              labelText={(f) => f.properties.name.toUpperCase()}
+              labelSize={(f) => Math.min(1.1, 0.45 + stats[f.properties.fips].n * 0.02)}
+              labelColor={() => countryLook.label}
+              labelDotRadius={0}
+              labelAltitude={0.022}
+              labelResolution={2}
             />
           )}
           {selected && (
