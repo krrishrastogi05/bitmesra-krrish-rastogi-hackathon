@@ -19,8 +19,8 @@ function Confusion({ title, rep }) {
                 <td className="muted">{rep.labels[i]}</td>
                 {row.map((v, j) => (
                   <td key={j} className="num" style={{ textAlign: 'center', fontWeight: i === j ? 700 : 400,
-                    background: i === j ? `rgb(255 176 32 / ${0.1 + (v / max) * 0.7})` : v ? `rgb(255 77 79 / ${0.05 + (v / max) * 0.6})` : 'transparent',
-                    color: i === j ? '#000' : undefined }}>{v}</td>
+                    background: i === j ? `color-mix(in srgb, var(--amber) ${Math.round(10 + (v / max) * 70)}%, transparent)` : v ? `color-mix(in srgb, var(--red) ${Math.round(5 + (v / max) * 55)}%, transparent)` : 'transparent',
+                    color: i === j && v / max > 0.55 ? 'var(--on-accent)' : undefined }}>{v}</td>
                 ))}
               </tr>
             ))}

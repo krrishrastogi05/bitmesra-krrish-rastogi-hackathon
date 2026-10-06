@@ -3,6 +3,7 @@ import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { keymap } from '@codemirror/view';
 import { post } from '../api';
+import { useTheme } from '../theme';
 
 const SNIPPETS = {
   'Impact leaders': `# Which stocks had the strongest signals?
@@ -39,6 +40,7 @@ result = s.sort_values("my_risk", ascending=False)[["date", "ticker", "sentiment
 };
 
 export default function WorkbenchPanel() {
+  const { theme } = useTheme();
   const [code, setCode] = useState(SNIPPETS['Impact leaders']);
   const [out, setOut] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -46,8 +48,8 @@ export default function WorkbenchPanel() {
 
   const run = useCallback(async () => {
     setBusy(true); setErr(null);
-    try { setOut(await post('/workbench/run', { code })); } catch (e) { setErr(e.message); } finally { setBusy(false); }
-  }, [code]);
+    try { setOut(await post('/workbench/run', { code, theme })); } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  }, [code, theme]);
 
   const runKey = keymap.of([{ key: 'Mod-Enter', run: () => { run(); return true; } }]);
 
@@ -61,8 +63,8 @@ export default function WorkbenchPanel() {
         <div className="pad" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', borderBottom: '1px solid var(--line)' }}>
           {Object.keys(SNIPPETS).map((k) => <button key={k} className="btn" onClick={() => setCode(SNIPPETS[k])}>{k}</button>)}
         </div>
-        <div className="panel-b" style={{ background: '#000' }}>
-          <CodeMirror value={code} onChange={setCode} theme="dark" height="100%" style={{ height: '100%', fontSize: 12 }}
+        <div className="panel-b" style={{ background: 'var(--well)' }}>
+          <CodeMirror value={code} onChange={setCode} theme={theme} height="100%" style={{ height: '100%', fontSize: 12 }}
             extensions={[python(), runKey]} basicSetup={{ foldGutter: false }} aria-label="Python code" />
         </div>
         <div className="pad" style={{ display: 'flex', gap: 10, alignItems: 'center', borderTop: '1px solid var(--line)' }}>
@@ -77,7 +79,7 @@ export default function WorkbenchPanel() {
           {err && <div className="err" style={{ margin: 0 }}>{err}</div>}
           {!out && !err && <div className="empty">Pick a snippet or write code, then press RUN.</div>}
           {out?.error && <pre className="err" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{out.error}</pre>}
-          {out?.stdout && <pre style={{ margin: 0, padding: 10, background: '#000', border: '1px solid var(--line)', whiteSpace: 'pre-wrap' }}>{out.stdout}</pre>}
+          {out?.stdout && <pre style={{ margin: 0, padding: 10, background: 'var(--well)', border: '1px solid var(--line)', whiteSpace: 'pre-wrap' }}>{out.stdout}</pre>}
           {out?.figures?.map((f, i) => <img key={i} alt="Chart from the workbench" src={`data:image/png;base64,${f}`} style={{ maxWidth: '100%', border: '1px solid var(--line)' }} />)}
           {out?.table && (
             <div style={{ overflow: 'auto', border: '1px solid var(--line)', maxHeight: 420 }}>

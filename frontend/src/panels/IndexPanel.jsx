@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useApi } from '../api';
+import { useTheme } from '../theme';
 
 const PERIODS = { 'FULL YEAR': ['2021-10-01', '2022-09-29'], '2022 H1': ['2022-01-03', '2022-06-30'], 'CRISIS ±1M': ['2022-01-18', '2022-04-08'] };
-const PALETTE = ['#ffb020', '#22d3ee', '#a78bfa', '#2fd47c', '#ff5a5f', '#f472b6', '#60a5fa', '#facc15', '#34d399', '#fb923c', '#c084fc', '#38bdf8', '#e879f9', '#4ade80', '#f87171', '#94a3b8'];
-const axis = { stroke: '#4f5967', fontSize: 10, fontFamily: 'JetBrains Mono' };
-const tip = { contentStyle: { background: '#07090b', border: '1px solid #252b35', fontFamily: 'JetBrains Mono', fontSize: 11 }, labelStyle: { color: '#ffb020' } };
+/** One colour per stock. The light palette uses darker shades so that thin areas stay visible on white. */
+const PALETTE = {
+  dark: ['#ffb020', '#22d3ee', '#a78bfa', '#2fd47c', '#ff5a5f', '#f472b6', '#60a5fa', '#facc15', '#34d399', '#fb923c', '#c084fc', '#38bdf8', '#e879f9', '#4ade80', '#f87171', '#94a3b8'],
+  light: ['#b45309', '#0e7490', '#6d28d9', '#047857', '#dc2626', '#be185d', '#2563eb', '#a16207', '#0f766e', '#c2410c', '#7e22ce', '#0369a1', '#a21caf', '#15803d', '#b91c1c', '#475569'],
+};
 
 export default function IndexPanel({ ctx }) {
   const { day, days } = ctx;
+  const { c, theme } = useTheme();
+  const palette = PALETTE[theme];
+  const axis = { stroke: c.faint, fontSize: 10, fontFamily: 'JetBrains Mono' };
+  const tip = { contentStyle: { background: c.panel, border: `1px solid ${c.line2}`, color: c.text, fontFamily: 'JetBrains Mono', fontSize: 11 }, labelStyle: { color: c.amber } };
   const [period, setPeriod] = useState('FULL YEAR');
   const [tilt, setTilt] = useState(2.5);
   const [tiltQ, setTiltQ] = useState(2.5);
@@ -38,7 +45,7 @@ export default function IndexPanel({ ctx }) {
         <div className="pad" style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center' }}>
           <div className="seg">{Object.keys(PERIODS).map((p) => <button key={p} className={period === p ? 'on' : ''} onClick={() => setPeriod(p)}>{p}</button>)}</div>
           <label style={{ display: 'flex', gap: 8, alignItems: 'center' }} className="muted">
-            TILT <input type="range" min="0" max="6" step="0.5" value={tilt} onChange={(e) => setTilt(+e.target.value)} style={{ accentColor: '#ffb020' }} />
+            TILT <input type="range" min="0" max="6" step="0.5" value={tilt} onChange={(e) => setTilt(+e.target.value)} style={{ accentColor: 'var(--amber)' }} />
             <b className="amber num" style={{ width: 28 }}>{tilt.toFixed(1)}</b>
           </label>
           <div className="seg" title="Max weight per stock">{[0.1, 0.15, 0.2, 0.3].map((c) => <button key={c} className={cap === c ? 'on' : ''} onClick={() => setCap(c)}>CAP {c * 100}%</button>)}</div>
@@ -63,14 +70,14 @@ export default function IndexPanel({ ctx }) {
         <div className="panel-b" style={{ padding: '8px 8px 0' }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={rows}>
-              <CartesianGrid stroke="#141922" strokeDasharray="2 4" />
+              <CartesianGrid stroke={c.line} strokeDasharray="2 4" />
               <XAxis dataKey="date" {...axis} tick={axis} minTickGap={40} />
               <YAxis {...axis} tick={axis} domain={['auto', 'auto']} width={44} />
               <Tooltip {...tip} />
-              {crisis[0] && <ReferenceArea x1={crisis[0]} x2={crisis[1]} fill="#ff4d4f" fillOpacity={0.06} />}
-              {day && <ReferenceLine x={day.date} stroke="#ffb020" strokeDasharray="3 3" />}
-              <Line type="monotone" dataKey="index" name="Tilted" stroke="#ffb020" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="benchmark" name="Equal weight" stroke="#8a94a3" strokeWidth={1.4} dot={false} strokeDasharray="4 3" />
+              {crisis[0] && <ReferenceArea x1={crisis[0]} x2={crisis[1]} fill={c.red} fillOpacity={0.07} />}
+              {day && <ReferenceLine x={day.date} stroke={c.amber} strokeDasharray="3 3" />}
+              <Line type="monotone" dataKey="index" name="Tilted" stroke={c.amber} strokeWidth={2} dot={false} />
+              <Line type="monotone" dataKey="benchmark" name="Equal weight" stroke={c.muted} strokeWidth={1.4} dot={false} strokeDasharray="4 3" />
               <Legend wrapperStyle={{ fontSize: 10 }} />
             </LineChart>
           </ResponsiveContainer>
@@ -85,9 +92,9 @@ export default function IndexPanel({ ctx }) {
               <XAxis dataKey="date" {...axis} tick={axis} minTickGap={40} />
               <YAxis {...axis} tick={axis} tickFormatter={(v) => `${Math.round(v * 100)}%`} width={44} />
               <Tooltip {...tip} formatter={(v) => `${(v * 100).toFixed(1)}%`} />
-              {day && <ReferenceLine x={day.date} stroke="#ffb020" strokeDasharray="3 3" />}
+              {day && <ReferenceLine x={day.date} stroke={c.amber} strokeDasharray="3 3" />}
               {r?.tickers.map((t, i) => (
-                <Area key={t} type="stepAfter" dataKey={t} stackId="w" stroke={PALETTE[i % PALETTE.length]} fill={PALETTE[i % PALETTE.length]} fillOpacity={0.55} strokeWidth={0.6} isAnimationActive={false} />
+                <Area key={t} type="stepAfter" dataKey={t} stackId="w" stroke={palette[i % palette.length]} fill={palette[i % palette.length]} fillOpacity={0.55} strokeWidth={0.6} isAnimationActive={false} />
               ))}
             </AreaChart>
           </ResponsiveContainer>

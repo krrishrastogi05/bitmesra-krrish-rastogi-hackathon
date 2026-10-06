@@ -4,7 +4,7 @@ import { ArrowRight, Globe, Landmark, ScanSearch } from 'lucide-react';
 const HIGHLIGHT_CARDS = [
   {
     icon: ScanSearch,
-    accent: '#ffb020',
+    accent: 'var(--amber)',
     label: 'Explainable NLP',
     headline: 'No LLM. Every score has a reason.',
     body: 'TF-IDF models, rules and a finance-risk word list. Each signal shows the words and the parts behind its score.',
@@ -12,14 +12,14 @@ const HIGHLIGHT_CARDS = [
   },
   {
     icon: Globe,
-    accent: '#ff4d4f',
+    accent: 'var(--red)',
     label: 'Risk Globe',
     headline: 'See the news move',
     body: 'GDELT events on a 3D globe. Replay the Russia–Ukraine shock day by day, with alerts on high-impact events.',
   },
   {
     icon: Landmark,
-    accent: '#22d3ee',
+    accent: 'var(--cyan)',
     label: 'Act on it',
     headline: 'Rebalance and stress-test',
     body: 'A sentiment-tilted S&P 100 index and a bank book stress test with the CET1 impact, both driven by the signals.',
@@ -40,12 +40,25 @@ export default function SplashScreen({ onComplete }) {
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
     .lp-root {
+      --lp-bg: #000000; --lp-fg: 255,255,255; --lp-ink: #ffffff; --lp-badge: #ffcf70;
+      --lp-cta-bg: #ffffff; --lp-cta-fg: #000000;
       position: fixed; inset: 0; z-index: 100;
-      background: #000;
+      background: var(--lp-bg);
       font-family: 'Inter', sans-serif;
       overflow-y: auto;
       transition: opacity 0.5s ease;
     }
+    :root[data-theme="light"] .lp-root {
+      --lp-bg: #f4f6f9; --lp-fg: 15,23,42; --lp-ink: #0f172a; --lp-badge: #b45309;
+      --lp-cta-bg: #0f172a; --lp-cta-fg: #ffffff;
+    }
+    :root[data-theme="light"] .lp-team, :root[data-theme="light"] .lp-footnote { color: rgba(15,23,42,0.55); }
+    :root[data-theme="light"] .lp-kicker { color: rgba(15,23,42,0.6); }
+    :root[data-theme="light"] .lp-tagline { color: rgba(15,23,42,0.7); }
+    :root[data-theme="light"] .lp-tagline strong { color: #0f172a; }
+    :root[data-theme="light"] .lp-card { background: #ffffff; border-color: rgba(15,23,42,0.1); box-shadow: 0 1px 2px rgba(15,23,42,0.05); }
+    :root[data-theme="light"] .lp-card-body { color: rgba(15,23,42,0.7); }
+    :root[data-theme="light"] .lp-pill { color: rgba(15,23,42,0.68); border-color: rgba(15,23,42,0.16); background: #ffffff; }
     .lp-root.lp-out { opacity: 0; pointer-events: none; }
 
     .lp-blob {
@@ -102,7 +115,7 @@ export default function SplashScreen({ onComplete }) {
       font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 600;
-      color: #ffcf70;
+      color: var(--lp-badge);
       letter-spacing: 0.03em;
     }
     .lp-dot {
@@ -117,7 +130,7 @@ export default function SplashScreen({ onComplete }) {
       font-weight: 600;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.22);
+      color: rgba(var(--lp-fg),0.22);
     }
 
     /* Headline block */
@@ -127,14 +140,14 @@ export default function SplashScreen({ onComplete }) {
       font-weight: 600;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
+      color: rgba(var(--lp-fg),0.28);
       margin-bottom: 10px;
     }
     .lp-h1 {
       font-family: 'Space Grotesk', sans-serif;
       font-size: clamp(48px, 7vw, 88px);
       font-weight: 700;
-      color: #fff;
+      color: var(--lp-ink);
       line-height: 1.0;
       letter-spacing: -0.04em;
       margin: 0;
@@ -151,13 +164,13 @@ export default function SplashScreen({ onComplete }) {
       font-family: 'Inter', sans-serif;
       font-size: clamp(15px, 1.8vw, 18px);
       font-weight: 400;
-      color: rgba(255,255,255,0.42);
+      color: rgba(var(--lp-fg),0.42);
       line-height: 1.65;
       max-width: 560px;
       margin: 0 auto 40px;
     }
     .lp-tagline strong {
-      color: rgba(255,255,255,0.78);
+      color: rgba(var(--lp-fg),0.78);
       font-weight: 600;
     }
 
@@ -171,16 +184,16 @@ export default function SplashScreen({ onComplete }) {
     }
     .lp-card {
       border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(var(--lp-fg),0.07);
+      background: rgba(var(--lp-fg),0.03);
       padding: 20px 20px 22px;
       text-align: left;
       transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
       cursor: default;
     }
     .lp-card:hover {
-      background: rgba(255,255,255,0.055);
-      border-color: rgba(255,255,255,0.14);
+      background: rgba(var(--lp-fg),0.055);
+      border-color: rgba(var(--lp-fg),0.14);
     }
     .lp-card.glow {
       border-color: rgba(255,176,32,0.3);
@@ -217,13 +230,13 @@ export default function SplashScreen({ onComplete }) {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 17px;
       font-weight: 700;
-      color: #fff;
+      color: var(--lp-ink);
       letter-spacing: -0.02em;
       margin-bottom: 7px;
     }
     .lp-card-body {
       font-size: 12.5px;
-      color: rgba(255,255,255,0.45);
+      color: rgba(var(--lp-fg),0.45);
       line-height: 1.6;
     }
 
@@ -238,15 +251,15 @@ export default function SplashScreen({ onComplete }) {
     .lp-pill {
       font-size: 12px;
       font-weight: 500;
-      color: rgba(255,255,255,0.4);
+      color: rgba(var(--lp-fg),0.4);
       padding: 5px 14px;
       border-radius: 99px;
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid rgba(var(--lp-fg),0.09);
       background: transparent;
       cursor: default;
       transition: color 0.2s, border-color 0.2s;
     }
-    .lp-pill:hover { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.22); }
+    .lp-pill:hover { color: rgba(var(--lp-fg),0.75); border-color: rgba(var(--lp-fg),0.22); }
 
     /* CTA */
     .lp-cta-wrap {
@@ -260,8 +273,8 @@ export default function SplashScreen({ onComplete }) {
       display: inline-flex; align-items: center; gap: 10px;
       padding: 15px 44px;
       border-radius: 14px;
-      background: #fff;
-      color: #000;
+      background: var(--lp-cta-bg);
+      color: var(--lp-cta-fg);
       font-family: 'Space Grotesk', sans-serif;
       font-size: 16px;
       font-weight: 700;
@@ -269,11 +282,11 @@ export default function SplashScreen({ onComplete }) {
       cursor: pointer;
       letter-spacing: -0.01em;
       transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.28s;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.2), 0 8px 32px rgba(255,255,255,0.07);
+      box-shadow: 0 0 0 1px rgba(var(--lp-fg),0.2), 0 8px 32px rgba(var(--lp-fg),0.07);
     }
     .lp-cta:hover {
       transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.35), 0 16px 48px rgba(255,255,255,0.13);
+      box-shadow: 0 0 0 1px rgba(var(--lp-fg),0.35), 0 16px 48px rgba(var(--lp-fg),0.13);
     }
     .lp-cta .arr { transition: transform 0.2s; }
     .lp-cta:hover .arr { transform: translateX(4px); }
@@ -287,7 +300,7 @@ export default function SplashScreen({ onComplete }) {
     @keyframes lp-sh { 60%,100%{ transform: translateX(200%); } }
     .lp-footnote {
       font-size: 11px;
-      color: rgba(255,255,255,0.18);
+      color: rgba(var(--lp-fg),0.18);
       letter-spacing: 0.03em;
     }
 
@@ -343,13 +356,13 @@ export default function SplashScreen({ onComplete }) {
                   <div className="lp-card-top">
                     <div
                       className="lp-card-icon"
-                      style={{ background: `${c.accent}18`, border: `1px solid ${c.accent}35` }}
+                      style={{ background: `color-mix(in srgb, ${c.accent} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${c.accent} 22%, transparent)` }}
                     >
                       <Icon size={15} style={{ color: c.accent }} />
                     </div>
                     <span
                       className="lp-card-chip"
-                      style={{ color: c.accent, borderColor: `${c.accent}40`, background: `${c.accent}10` }}
+                      style={{ color: c.accent, borderColor: `color-mix(in srgb, ${c.accent} 25%, transparent)`, background: `color-mix(in srgb, ${c.accent} 7%, transparent)` }}
                     >
                       {c.label}
                     </span>

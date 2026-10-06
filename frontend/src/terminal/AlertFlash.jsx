@@ -13,7 +13,7 @@ export default function AlertFlash({ alert, onClose, onStress, onFocus }) {
         </div>
         <div className="alert-t">{alert.headline}</div>
         <div className="alert-m">
-          <span className="chip" style={{ color: CLASS_COLOR.Geopolitical, borderColor: 'rgb(255 77 79 / .4)' }}>IMPACT {alert.impact}/10</span>
+          <span className="chip" style={{ color: CLASS_COLOR.Geopolitical, borderColor: 'color-mix(in srgb, var(--red) 40%, transparent)' }}>IMPACT {alert.impact}/10</span>
           <span className="chip amber">TRIGGERS SCENARIO: {alert.scenario?.toUpperCase()}</span>
           {alert.count > 1 && <span className="chip muted">+{alert.count - 1} MORE TODAY</span>}
         </div>

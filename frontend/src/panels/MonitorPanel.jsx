@@ -2,16 +2,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Globe from 'react-globe.gl';
 import { Radio, X } from 'lucide-react';
 import { CLASS_COLOR, sentColor, useApi } from '../api';
+import { classHex, useTheme } from '../theme';
 import { quoteAt } from '../terminal/PriceTape';
 import ExplainCard from './ExplainCard';
 import './monitor.css';
 
 // Globe component and layout reused from the Datatalk FinancialGlobe; data now comes from the engine.
-const IMPACT_COLOR = (i) => (i >= 8 ? '#ef4444' : i >= 6 ? '#f59e0b' : '#22c55e');
+const IMPACT_COLOR = (i) => (i >= 8 ? 'var(--sev-hi)' : i >= 6 ? 'var(--sev-mid)' : 'var(--sev-lo)');
+/** '#rrggbb' + alpha -> 'rgba(...)', for the globe rings (WebGL cannot read CSS variables). */
+const withAlpha = (hex, a) => { const n = parseInt((hex || '#ef4444').slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+/** Globe look per theme: night earth on a star field, or daylight earth on a pale sky. */
+const GLOBE_LOOK = {
+  dark: { globe: '//unpkg.com/three-globe/example/img/earth-night.jpg', sky: '//unpkg.com/three-globe/example/img/night-sky.png', atmosphere: '#ff7a1a' },
+  light: { globe: '//unpkg.com/three-globe/example/img/earth-blue-marble.jpg', sky: null, atmosphere: '#7fb2ff' },
+};
 const BAND = (i) => (i >= 8 ? 'high' : i >= 6 ? 'medium' : 'low');
 
 export default function MonitorPanel({ ctx }) {
   const { day, universe, prices, args } = ctx;
+  const { c, theme } = useTheme();
+  const hex = classHex(c);
+  const look = GLOBE_LOOK[theme];
   const events = useApi(day ? `/signals/events?date=${day.date}` : null);
   const posts = useApi(day ? `/signals/posts?date=${day.date}` : null);
 
@@ -86,7 +97,7 @@ export default function MonitorPanel({ ctx }) {
                   <div key={e.event_id} className={`fg-news-item${selected?.event_id === e.event_id ? ' selected' : ''}`} onClick={() => focus(e)}
                     style={{ borderLeftColor: selected?.event_id === e.event_id ? IMPACT_COLOR(e.impact) : undefined }}>
                     <div className="fg-news-top">
-                      <span className="fg-severity-dot" style={{ background: IMPACT_COLOR(e.impact), boxShadow: e.impact >= 8 ? `0 0 ${tick % 2 ? 6 : 3}px #ef4444` : 'none' }} />
+                      <span className="fg-severity-dot" style={{ background: IMPACT_COLOR(e.impact), boxShadow: e.impact >= 8 ? `0 0 ${tick % 2 ? 6 : 3}px var(--sev-hi)` : 'none' }} />
                       <span className="fg-news-category" style={{ color: CLASS_COLOR[e.event_class] }}>{e.event_class}</span>
                       <span className="fg-news-time num">IMP {e.impact} · <span style={{ color: sentColor(e.sentiment) }}>{e.sentiment > 0 ? '+' : ''}{e.sentiment.toFixed(2)}</span></span>
                     </div>
@@ -106,7 +117,7 @@ export default function MonitorPanel({ ctx }) {
                     <span className="fg-news-category" style={{ color: CLASS_COLOR[p.event_class] }}>{p.event_class}</span>
                     <span className="fg-news-time num" style={{ color: sentColor(p.sentiment) }}>{p.sentiment > 0 ? '+' : ''}{p.sentiment.toFixed(2)}</span>
                   </div>
-                  <div className="fg-news-desc" style={{ borderTop: 0, paddingTop: 0, color: '#9ca3af' }}>{p.text}</div>
+                  <div className="fg-news-desc" style={{ borderTop: 0, paddingTop: 0, color: 'var(--fg-muted)' }}>{p.text}</div>
                 </div>
               ))}
             </div>
@@ -121,28 +132,29 @@ export default function MonitorPanel({ ctx }) {
               width={size.w}
               height={size.h}
               onGlobeReady={() => setReady(true)}
-              globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+              globeImageUrl={look.globe}
               bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-              backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+              backgroundImageUrl={look.sky}
+              backgroundColor={c.fgGlobe || '#000000'}
               showAtmosphere
-              atmosphereColor="#ff7a1a"
+              atmosphereColor={look.atmosphere}
               atmosphereAltitude={0.13}
               pointsData={pins}
               pointLat="lat"
               pointLng="lng"
-              pointColor={(d) => CLASS_COLOR[d.event_class]}
+              pointColor={(d) => hex[d.event_class]}
               pointRadius={(d) => 0.18 + d.impact * 0.06 + (d.impact >= 8 && tick % 2 === 0 ? 0.12 : 0)}
               pointAltitude={(d) => 0.01 + d.impact * 0.006}
               pointResolution={10}
-              pointLabel={(d) => `<div style="background:#0b0b0b;border:1px solid ${CLASS_COLOR[d.event_class]};padding:8px 12px;font-family:JetBrains Mono,monospace;max-width:280px;color:#e5e7eb">
+              pointLabel={(d) => `<div style="background:var(--fg-card);border:1px solid ${CLASS_COLOR[d.event_class]};padding:8px 12px;font-family:JetBrains Mono,monospace;max-width:280px;color:var(--fg-strong);box-shadow:0 6px 20px var(--fg-shadow)">
                 <div style="color:${CLASS_COLOR[d.event_class]};font-size:10px;font-weight:700;letter-spacing:.1em">${d.event_class.toUpperCase()} · IMPACT ${d.impact}</div>
                 <div style="font-size:12px;margin-top:4px;text-transform:capitalize">${d.headline}</div>
-                <div style="font-size:10px;color:#6b7280;margin-top:4px">📍 ${d.place}</div></div>`}
+                <div style="font-size:10px;color:var(--fg-faint);margin-top:4px">📍 ${d.place}</div></div>`}
               onPointClick={focus}
               ringsData={pins.filter((e) => e.impact >= 8)}
               ringLat="lat"
               ringLng="lng"
-              ringColor={() => (t) => `rgba(239,68,68,${1 - t})`}
+              ringColor={() => (t) => withAlpha(c.sevHi, 1 - t)}
               ringMaxRadius={5}
               ringPropagationSpeed={2.2}
               ringRepeatPeriod={900}

@@ -39,7 +39,7 @@ export default function PipelinePanel() {
           {sources && (
             <div style={{ display: 'grid', gap: 6, alignContent: 'center', marginRight: 4 }}>
               {Object.entries(sources).map(([k, v]) => (
-                <div key={k} className="chip" style={{ padding: '4px 8px', color: 'var(--cyan)', borderColor: 'rgb(34 211 238 / .35)' }}>
+                <div key={k} className="chip" style={{ padding: '4px 8px', color: 'var(--cyan)', borderColor: 'color-mix(in srgb, var(--cyan) 40%, transparent)' }}>
                   {k === 'tweets' ? 'KAGGLE TWEETS' : 'GDELT NEWS'} <b className="num">{v.toLocaleString()}</b>
                 </div>
               ))}
@@ -61,7 +61,7 @@ export default function PipelinePanel() {
           ))}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div className="flow-link"><span className="flow-dot" style={{ animationDelay: '1.9s' }} /></div>
-            <div className="chip" style={{ padding: '4px 8px', color: 'var(--up)', borderColor: 'rgb(47 212 124 / .35)' }}>API · JSON · CSV</div>
+            <div className="chip" style={{ padding: '4px 8px', color: 'var(--up)', borderColor: 'color-mix(in srgb, var(--up) 40%, transparent)' }}>API · JSON · CSV</div>
           </div>
         </div>
       </section>
@@ -79,7 +79,7 @@ export default function PipelinePanel() {
             {active?.sample && (
               <>
                 <div className="label">Sample</div>
-                <pre style={{ margin: 0, padding: 10, background: '#000', border: '1px solid var(--line)', whiteSpace: 'pre-wrap', color: '#c9d1db' }}>
+                <pre style={{ margin: 0, padding: 10, background: 'var(--well)', border: '1px solid var(--line)', whiteSpace: 'pre-wrap', color: 'var(--text)' }}>
                   {JSON.stringify(active.sample, null, 2)}
                 </pre>
               </>
@@ -91,7 +91,7 @@ export default function PipelinePanel() {
           <div className="panel-h"><span className="t">Live scoring</span><span className="meta">THE SAME MODELS · NO LLM</span></div>
           <div className="panel-b pad" style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
             <textarea value={text} onChange={(e) => setText(e.target.value)} rows={3} maxLength={500} aria-label="Text to score"
-              style={{ width: '100%', resize: 'vertical', background: '#000', border: '1px solid var(--line-2)', padding: 8, outline: 'none' }} />
+              style={{ width: '100%', resize: 'vertical', background: 'var(--well)', border: '1px solid var(--line-2)', padding: 8, outline: 'none' }} />
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               <button className="btn primary" onClick={run} disabled={busy || text.trim().length < 3}>{busy ? 'SCORING…' : 'SCORE <GO>'}</button>
               {EXAMPLES.map((x) => <button key={x} className="btn" onClick={() => setText(x)} title={x}>{x.split(' ').slice(0, 3).join(' ')}…</button>)}

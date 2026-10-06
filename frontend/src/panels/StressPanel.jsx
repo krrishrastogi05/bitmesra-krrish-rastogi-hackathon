@@ -24,8 +24,8 @@ function Waterfall({ steps }) {
         {steps.map((d) => (
           <div key={d.name} style={{ position: 'relative' }} title={`${d.name}: ${fmtM(d.v)}`}>
             <div style={{ position: 'absolute', left: '15%', right: '15%', top: y(d.range[1]), height: `max(2px, ${((d.range[1] - d.range[0]) / span) * 100}%)`,
-              background: d.total ? (d.v < 0 ? 'var(--red)' : 'var(--up)') : d.v < 0 ? 'rgb(255 90 95 / .55)' : 'rgb(47 212 124 / .55)',
-              boxShadow: d.total ? '0 0 18px rgb(255 77 79 / .35)' : 'none', transition: 'top .5s, height .5s' }} />
+              background: d.total ? (d.v < 0 ? 'var(--red)' : 'var(--up)') : d.v < 0 ? 'color-mix(in srgb, var(--down) 55%, transparent)' : 'color-mix(in srgb, var(--up) 55%, transparent)',
+              boxShadow: d.total ? '0 0 18px var(--red-glow)' : 'none', transition: 'top .5s, height .5s' }} />
             <span className="num" style={{ position: 'absolute', left: 0, right: 0, textAlign: 'center', fontSize: 11, fontWeight: 700,
               top: `calc(${y(d.range[1])} - 17px)`, color: d.v < 0 ? 'var(--down)' : 'var(--up)' }}>
               {d.v > 0 ? '+' : ''}{d.v.toFixed(1)}
@@ -83,7 +83,7 @@ export default function StressPanel({ ctx }) {
                 background: result?.scenario.id === s.id ? 'var(--amber-dim)' : 'transparent', borderLeft: `2px solid ${result?.scenario.id === s.id ? 'var(--amber)' : 'transparent'}` }}>
               <div style={{ color: result?.scenario.id === s.id ? 'var(--amber)' : 'var(--text)', fontWeight: 700 }}>{s.name}</div>
               <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>{s.description}</div>
-              {s.trigger && <div className="chip" style={{ marginTop: 6, color: 'var(--red)', borderColor: 'rgb(255 77 79 / .35)' }}>AUTO: {s.trigger.eventClass} ≥ {s.trigger.minImpact}</div>}
+              {s.trigger && <div className="chip" style={{ marginTop: 6, color: 'var(--down)', borderColor: 'color-mix(in srgb, var(--red) 35%, transparent)' }}>AUTO: {s.trigger.eventClass} ≥ {s.trigger.minImpact}</div>}
             </button>
           ))}
           {custom && (
@@ -92,14 +92,14 @@ export default function StressPanel({ ctx }) {
               {SLIDERS.map((s) => (
                 <label key={s.k} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 56px', gap: 8, alignItems: 'center' }} className="muted">
                   {s.label}
-                  <input type="range" min={s.min} max={s.max} step={s.step} value={custom[s.k]} style={{ accentColor: '#ffb020' }}
+                  <input type="range" min={s.min} max={s.max} step={s.step} value={custom[s.k]} style={{ accentColor: 'var(--amber)' }}
                     onChange={(e) => setCustom({ ...custom, [s.k]: +e.target.value })} />
                   <b className="amber num" style={{ textAlign: 'right' }}>{s.fmt(custom[s.k])}</b>
                 </label>
               ))}
               <label style={{ display: 'grid', gridTemplateColumns: '80px 1fr 56px', gap: 8, alignItems: 'center' }} className="muted">
                 PD ×
-                <input type="range" min="1" max="4" step="0.1" value={custom.pdMultiplier.default} style={{ accentColor: '#ffb020' }}
+                <input type="range" min="1" max="4" step="0.1" value={custom.pdMultiplier.default} style={{ accentColor: 'var(--amber)' }}
                   onChange={(e) => setCustom({ ...custom, pdMultiplier: { ...custom.pdMultiplier, default: +e.target.value } })} />
                 <b className="amber num" style={{ textAlign: 'right' }}>{custom.pdMultiplier.default.toFixed(1)}×</b>
               </label>
@@ -124,9 +124,9 @@ export default function StressPanel({ ctx }) {
               <div style={{ gridColumn: 'span 2' }}>
                 <div className="k">CET1 ratio · min 4.5% · buffer 7.0%</div>
                 <div style={{ position: 'relative', height: 26, marginTop: 6, background: 'var(--raise)' }}>
-                  <div style={{ position: 'absolute', inset: 0, width: scale(cap.ratioBefore), background: 'rgb(138 148 163 / .35)' }} />
+                  <div style={{ position: 'absolute', inset: 0, width: scale(cap.ratioBefore), background: 'color-mix(in srgb, var(--muted) 35%, transparent)' }} />
                   <div style={{ position: 'absolute', inset: 0, width: scale(cap.ratioAfter), background: cap.ratioAfter < 7 ? 'var(--red)' : 'var(--amber)', transition: 'width .6s' }} />
-                  {[4.5, 7].map((x) => <div key={x} style={{ position: 'absolute', top: -3, bottom: -3, left: scale(x), width: 2, background: x === 4.5 ? 'var(--red)' : '#fff' }} />)}
+                  {[4.5, 7].map((x) => <div key={x} style={{ position: 'absolute', top: -3, bottom: -3, left: scale(x), width: 2, background: x === 4.5 ? 'var(--red)' : 'var(--ink)' }} />)}
                   <span className="num" style={{ position: 'absolute', right: 6, top: 4, fontWeight: 700 }}>{cap.ratioBefore}% → {cap.ratioAfter}%</span>
                 </div>
               </div>

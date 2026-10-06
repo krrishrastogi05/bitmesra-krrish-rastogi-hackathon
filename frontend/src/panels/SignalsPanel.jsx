@@ -5,7 +5,8 @@ import ExplainCard from './ExplainCard';
 /** Sentiment as a red-to-green colour. */
 const heat = (s) => {
   const a = Math.min(1, Math.abs(s) * 1.6);
-  return s >= 0 ? `rgb(47 212 124 / ${0.08 + a * 0.75})` : `rgb(255 90 95 / ${0.08 + a * 0.75})`;
+  const pct = Math.round(8 + a * 70);
+  return `color-mix(in srgb, var(${s >= 0 ? '--up' : '--down'}) ${pct}%, transparent)`;
 };
 
 export default function SignalsPanel({ ctx }) {
@@ -61,8 +62,8 @@ export default function SignalsPanel({ ctx }) {
                         <button title={s ? `${r.t} ${d}: sentiment ${s.sentiment}, impact ${s.impact}, ${s.posts} posts` : `${r.t} ${d}: no posts`}
                           onClick={() => { setSel({ ticker: r.t, date: d }); setDayIdx(i); }}
                           style={{
-                            width: '100%', height: 22, border: on ? '1px solid var(--amber)' : `1px solid rgb(255 176 32 / ${s ? (s.impact - 1) / 9 : 0})`,
-                            background: s ? heat(s.sentiment) : 'var(--panel-2)', fontSize: 9, color: s && s.impact >= 6 ? '#fff' : 'transparent',
+                            width: '100%', height: 22, border: on ? '1px solid var(--amber)' : `1px solid color-mix(in srgb, var(--amber) ${s ? Math.round(((s.impact - 1) / 9) * 100) : 0}%, transparent)`,
+                            background: s ? heat(s.sentiment) : 'var(--panel-2)', fontSize: 9, color: s && s.impact >= 6 ? 'var(--ink)' : 'transparent', fontWeight: 700,
                           }}>{s?.impact}</button>
                       </td>
                     );
@@ -93,7 +94,7 @@ export default function SignalsPanel({ ctx }) {
                 <div className="label">Strongest posts</div>
                 {(current.top ?? []).map((p, i) => (
                   <div key={i} style={{ border: '1px solid var(--line)', padding: 10, display: 'grid', gap: 8 }}>
-                    <div style={{ color: '#c9d1db' }}>{p.text}</div>
+                    <div style={{ color: 'var(--text)' }}>{p.text}</div>
                     <div className="num" style={{ color: sentColor(p.sentiment) }}>sentiment {p.sentiment > 0 ? '+' : ''}{p.sentiment.toFixed(2)}</div>
                     <ExplainCard explain={p.explain} parts={{}} />
                   </div>
