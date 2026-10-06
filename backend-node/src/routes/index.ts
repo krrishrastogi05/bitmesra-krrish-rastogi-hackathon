@@ -3,7 +3,7 @@ import { getHealth } from '../controllers/healthController';
 import { getIndex } from '../controllers/indexController';
 import { getTimeline } from '../controllers/replayController';
 import {
-  exportCsv, getCompanies, getEvents, getModelReport, getPipeline, getPosts, getUniverse,
+  exportCsv, getCompanies, getEvents, getModelReport, getPipeline, getPosts, getPrices, getUniverse,
 } from '../controllers/signalsController';
 import { getPortfolio, getScenarios, runScenario } from '../controllers/stressController';
 import { postRun, postScore } from '../controllers/workbenchController';
@@ -15,6 +15,7 @@ router.get('/health', asyncHandler(getHealth));
 
 // Engine output
 router.get('/universe', getUniverse);
+router.get('/prices', getPrices);
 router.get('/signals/companies', getCompanies);
 router.get('/signals/events', getEvents);
 router.get('/signals/posts', getPosts);

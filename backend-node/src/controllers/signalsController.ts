@@ -18,6 +18,11 @@ export function getUniverse(_req: Request, res: Response): void {
   res.json(signalStore.universe());
 }
 
+/** Daily close per ticker: { ticker: [[date, close], ...] }. */
+export function getPrices(_req: Request, res: Response): void {
+  res.json(signalStore.prices());
+}
+
 export function getCompanies(req: Request, res: Response): void {
   const q = companyQuery.parse(req.query);
   res.json(signalStore.companies().filter((s) => (!q.ticker || s.ticker === q.ticker.toUpperCase()) && inRange(s.date, q)));
