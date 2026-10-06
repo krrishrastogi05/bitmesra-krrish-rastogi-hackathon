@@ -2,6 +2,7 @@ import MonitorPanel from '../panels/MonitorPanel';
 import SignalsPanel from '../panels/SignalsPanel';
 import IndexPanel from '../panels/IndexPanel';
 import StressPanel from '../panels/StressPanel';
+import PipelinePanel from '../panels/PipelinePanel';
 
 /** Function keys, command words and descriptions for each terminal view. */
 export const VIEWS = [
@@ -19,4 +20,5 @@ export const PANELS = {
   SIG: SignalsPanel,
   IDX: IndexPanel,
   STRESS: StressPanel,
+  PIPE: PipelinePanel,
 };
