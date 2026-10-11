@@ -67,11 +67,11 @@ flowchart LR
 | Twitter Financial News Topic | Labels for the event classifier | <https://huggingface.co/datasets/zeroshot/twitter-financial-news-topic> |
 | Natural Earth 1:110m countries (public domain) | Country outlines on the globe (frontend/public/countries.geojson) | <https://www.naturalearthdata.com/> |
 
-All sources are public. `data/signals/` holds the signal files that the prototype runs on: events, company-days, posts, prices, the model report and the pipeline metrics. The engine downloads the raw files to `data/raw/` (about 190 MB) and does not commit them.
+All sources are public. The [`data/`](data/README.md) folder holds all data used: the signal files that the prototype runs on (`data/signals/`), the labelled training sets and daily prices (`data/raw/`), and the synthetic bank book and stress scenarios (`data/synthetic/`). The two large raw files (stock tweets, about 24 MB, and GDELT, about 160 MB) are downloaded by the engine on its first run; [data/README.md](data/README.md) lists every file and its source.
 
 Assumptions:
 
-- The bank book in Module B is synthetic (24 positions in `backend-node/src/services/portfolio.ts`). It does not describe a real bank. The shock sizes are examples.
+- The bank book in Module B is synthetic (24 positions, exported to `data/synthetic/bank_book.json`). It does not describe a real bank. The shock sizes are examples.
 - GDELT does not supply headline text. Headlines come from the words in the article URL.
 - The text sources are historical. The replay shows 17 February to 9 March 2022.
 
@@ -80,8 +80,8 @@ Assumptions:
 Runtime: Python 3.11 or later (tested with 3.13) and Node.js 20 or later (tested with 24) on Windows 11.
 
 ```bash
-git clone <your-repo-url>
-cd meridian
+git clone https://github.com/krrishrastogi05/bitmesra-krrish-rastogi-hackathon.git
+cd bitmesra-krrish-rastogi-hackathon
 pip install -r requirements.txt
 npm --prefix backend-node install
 npm --prefix frontend install
@@ -198,7 +198,7 @@ All routes start with `/api`.
 backend-node/   Express API (controllers, services, routes, middleware, tests)
 frontend/       React terminal (terminal shell, panels)
 sidecar/        FastAPI sidecar and the engine (sidecar/engine)
-data/signals/   Signal files that the engine writes
+data/           All data used: signals/ (engine output), raw/ (training sets, prices), synthetic/ (bank book, scenarios)
 docs/           Presentation (presentation.pdf), architecture diagram, demo script and screenshots
 ```
 

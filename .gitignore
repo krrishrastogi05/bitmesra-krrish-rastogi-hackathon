@@ -12,7 +12,9 @@ dist/
 .env
 
 # Engine: raw downloads and trained models are rebuilt by the pipeline
-data/raw/
+data/raw/*
+!data/raw/*.csv
+!data/raw/stock_prices.jsonl
 sidecar/models/
 
 # IDE / OS

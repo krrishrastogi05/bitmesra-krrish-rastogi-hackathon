@@ -1,0 +1,272 @@
+{
+ "positions": [
+  {
+   "id": "L1",
+   "book": "Loans",
+   "name": "European energy utility, term loan",
+   "sector": "Energy",
+   "region": "Europe",
+   "ead": 420,
+   "pd": 0.012,
+   "lgd": 0.45,
+   "rating": "BBB"
+  },
+  {
+   "id": "L2",
+   "book": "Loans",
+   "name": "Steel producer, revolving facility",
+   "sector": "Materials",
+   "region": "Emerging Europe",
+   "ead": 180,
+   "pd": 0.035,
+   "lgd": 0.55,
+   "rating": "BB"
+  },
+  {
+   "id": "L3",
+   "book": "Loans",
+   "name": "International airline, aircraft finance",
+   "sector": "Transport",
+   "region": "Global",
+   "ead": 260,
+   "pd": 0.028,
+   "lgd": 0.5,
+   "rating": "BB+"
+  },
+  {
+   "id": "L4",
+   "book": "Loans",
+   "name": "US hardware manufacturer, term loan",
+   "sector": "Technology",
+   "region": "North America",
+   "ead": 350,
+   "pd": 0.006,
+   "lgd": 0.4,
+   "rating": "A-"
+  },
+  {
+   "id": "L5",
+   "book": "Loans",
+   "name": "Agricultural commodity trader, trade finance",
+   "sector": "Commodities",
+   "region": "Europe",
+   "ead": 210,
+   "pd": 0.02,
+   "lgd": 0.45,
+   "rating": "BBB-"
+  },
+  {
+   "id": "L6",
+   "book": "Loans",
+   "name": "UK commercial real estate",
+   "sector": "Real Estate",
+   "region": "Europe",
+   "ead": 300,
+   "pd": 0.018,
+   "lgd": 0.35,
+   "rating": "BBB"
+  },
+  {
+   "id": "L7",
+   "book": "Loans",
+   "name": "SME lending portfolio",
+   "sector": "Consumer",
+   "region": "North America",
+   "ead": 500,
+   "pd": 0.03,
+   "lgd": 0.6,
+   "rating": "BB"
+  },
+  {
+   "id": "L8",
+   "book": "Loans",
+   "name": "Dry-bulk shipping company",
+   "sector": "Transport",
+   "region": "Global",
+   "ead": 150,
+   "pd": 0.04,
+   "lgd": 0.5,
+   "rating": "B+"
+  },
+  {
+   "id": "B1",
+   "book": "Bonds",
+   "name": "US Treasury 10Y",
+   "sector": "Sovereign",
+   "region": "North America",
+   "mv": 900,
+   "duration": 8.5,
+   "convexity": 0.9,
+   "spreadDuration": 0,
+   "grade": "Govt",
+   "rating": "AA+"
+  },
+  {
+   "id": "B2",
+   "book": "Bonds",
+   "name": "German Bund 5Y",
+   "sector": "Sovereign",
+   "region": "Europe",
+   "mv": 400,
+   "duration": 4.7,
+   "convexity": 0.3,
+   "spreadDuration": 0,
+   "grade": "Govt",
+   "rating": "AAA"
+  },
+  {
+   "id": "B3",
+   "book": "Bonds",
+   "name": "Energy major senior 7Y",
+   "sector": "Energy",
+   "region": "Europe",
+   "mv": 300,
+   "duration": 6,
+   "convexity": 0.5,
+   "spreadDuration": 6,
+   "grade": "IG",
+   "rating": "BBB"
+  },
+  {
+   "id": "B4",
+   "book": "Bonds",
+   "name": "Emerging Europe corporate 4Y",
+   "sector": "Materials",
+   "region": "Emerging Europe",
+   "mv": 120,
+   "duration": 3.5,
+   "convexity": 0.2,
+   "spreadDuration": 3.5,
+   "grade": "HY",
+   "rating": "BB"
+  },
+  {
+   "id": "B5",
+   "book": "Bonds",
+   "name": "Bank senior unsecured 3Y",
+   "sector": "Financials",
+   "region": "North America",
+   "mv": 250,
+   "duration": 2.8,
+   "convexity": 0.1,
+   "spreadDuration": 2.8,
+   "grade": "IG",
+   "rating": "A"
+  },
+  {
+   "id": "E1",
+   "book": "Equities",
+   "name": "Apple",
+   "ticker": "AAPL",
+   "sector": "Technology",
+   "region": "North America",
+   "mv": 60,
+   "beta": 1.2
+  },
+  {
+   "id": "E2",
+   "book": "Equities",
+   "name": "Microsoft",
+   "ticker": "MSFT",
+   "sector": "Technology",
+   "region": "North America",
+   "mv": 55,
+   "beta": 1.1
+  },
+  {
+   "id": "E3",
+   "book": "Equities",
+   "name": "Amazon",
+   "ticker": "AMZN",
+   "sector": "Consumer Discretionary",
+   "region": "North America",
+   "mv": 40,
+   "beta": 1.3
+  },
+  {
+   "id": "E4",
+   "book": "Equities",
+   "name": "Boeing",
+   "ticker": "BA",
+   "sector": "Industrials",
+   "region": "North America",
+   "mv": 35,
+   "beta": 1.5
+  },
+  {
+   "id": "E5",
+   "book": "Equities",
+   "name": "Coca-Cola",
+   "ticker": "KO",
+   "sector": "Consumer Staples",
+   "region": "North America",
+   "mv": 25,
+   "beta": 0.6
+  },
+  {
+   "id": "E6",
+   "book": "Equities",
+   "name": "Procter & Gamble",
+   "ticker": "PG",
+   "sector": "Consumer Staples",
+   "region": "North America",
+   "mv": 25,
+   "beta": 0.5
+  },
+  {
+   "id": "D1",
+   "book": "Derivatives",
+   "name": "Pay-fixed interest rate swap 10Y",
+   "kind": "pay-fixed-swap",
+   "sector": "Rates",
+   "region": "North America",
+   "notional": 1000,
+   "dv01": 0.85
+  },
+  {
+   "id": "D2",
+   "book": "Derivatives",
+   "name": "Receive-fixed interest rate swap 5Y",
+   "kind": "receive-fixed-swap",
+   "sector": "Rates",
+   "region": "Europe",
+   "notional": 600,
+   "dv01": 0.28
+  },
+  {
+   "id": "D3",
+   "book": "Derivatives",
+   "name": "S&P 500 put options (hedge)",
+   "kind": "equity-put",
+   "sector": "Equity index",
+   "region": "North America",
+   "notional": 300,
+   "delta": -0.35,
+   "gamma": 2
+  },
+  {
+   "id": "D4",
+   "book": "Derivatives",
+   "name": "Brent crude call options",
+   "kind": "oil-call",
+   "sector": "Commodities",
+   "region": "Global",
+   "notional": 80,
+   "delta": 0.5,
+   "gamma": 1.5
+  },
+  {
+   "id": "D5",
+   "book": "Derivatives",
+   "name": "EUR/USD forward, long EUR",
+   "kind": "eur-forward",
+   "sector": "FX",
+   "region": "Europe",
+   "notional": 400
+  }
+ ],
+ "capital": {
+  "cet1": 780,
+  "rwa": 5600
+ }
+}

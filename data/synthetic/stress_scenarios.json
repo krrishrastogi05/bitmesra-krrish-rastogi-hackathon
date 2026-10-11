@@ -1,0 +1,94 @@
+[
+ {
+  "id": "geo-severe",
+  "name": "Severe geopolitical shock",
+  "description": "War escalation in Europe. Energy prices spike, risk assets fall, credit for exposed regions deteriorates.",
+  "trigger": {
+   "eventClass": "Geopolitical",
+   "minImpact": 9
+  },
+  "shocks": {
+   "equity": -0.18,
+   "ratesBp": 250,
+   "igSpreadBp": 180,
+   "hySpreadBp": 450,
+   "oil": 0.45,
+   "eurUsd": -0.08,
+   "pdMultiplier": {
+    "default": 1.4,
+    "Energy": 1.8,
+    "Emerging Europe": 3,
+    "Transport": 2,
+    "Commodities": 1.7
+   }
+  }
+ },
+ {
+  "id": "geo",
+  "name": "Geopolitical shock",
+  "description": "The hackathon preset: a Geopolitical event with impact above 7. Equities down 10%, rates up 2%.",
+  "trigger": {
+   "eventClass": "Geopolitical",
+   "minImpact": 8
+  },
+  "shocks": {
+   "equity": -0.1,
+   "ratesBp": 200,
+   "igSpreadBp": 100,
+   "hySpreadBp": 250,
+   "oil": 0.25,
+   "eurUsd": -0.04,
+   "pdMultiplier": {
+    "default": 1.2,
+    "Energy": 1.4,
+    "Emerging Europe": 2,
+    "Transport": 1.5,
+    "Commodities": 1.3
+   }
+  }
+ },
+ {
+  "id": "credit",
+  "name": "Credit event",
+  "description": "A large default spreads through credit markets. Spreads widen, rates fall in a flight to quality.",
+  "trigger": {
+   "eventClass": "Credit Event",
+   "minImpact": 8
+  },
+  "shocks": {
+   "equity": -0.06,
+   "ratesBp": -40,
+   "igSpreadBp": 150,
+   "hySpreadBp": 400,
+   "oil": -0.05,
+   "eurUsd": -0.02,
+   "pdMultiplier": {
+    "default": 1.5,
+    "Financials": 2.2,
+    "Real Estate": 1.8
+   }
+  }
+ },
+ {
+  "id": "macro",
+  "name": "Macro rate shock",
+  "description": "Inflation surprise. Central banks hike faster than expected.",
+  "trigger": {
+   "eventClass": "Macro",
+   "minImpact": 8
+  },
+  "shocks": {
+   "equity": -0.07,
+   "ratesBp": 150,
+   "igSpreadBp": 60,
+   "hySpreadBp": 150,
+   "oil": 0.05,
+   "eurUsd": -0.03,
+   "pdMultiplier": {
+    "default": 1.2,
+    "Real Estate": 1.5,
+    "Consumer": 1.3
+   }
+  }
+ }
+]
